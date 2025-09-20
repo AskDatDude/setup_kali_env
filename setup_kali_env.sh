@@ -19,10 +19,6 @@ echo "[*] Applying Arc-Dark theme..."
 xfconf-query -c xsettings -p /Net/ThemeName -s "Arc-Dark"
 xfconf-query -c xfwm4 -p /general/theme -s "Arc-Dark"
 
-echo "[*] Setting XFCE panel color and transparency..."
-xfconf-query -c xfce4-panel -p /panels/panel-1/background-rgba -s "0.02 0.02 0.02 0.6"
-
-
 echo "[*] Cloning official Alacritty themes..."
 mkdir -p ~/.config/alacritty/themes
 git clone https://github.com/alacritty/alacritty-theme.git ~/.config/alacritty/themes
