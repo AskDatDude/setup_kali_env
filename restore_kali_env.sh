@@ -16,12 +16,8 @@ sed -i '/export PS1="\\w\\\[\\e\[91;1m\\\] \$ \\\[\\e\[0m\\\]"/d' ~/.bashrc
 source ~/.bashrc || true
 
 echo "[*] Resetting XFCE theme to default..."
-xfconf-query -c xsettings -p /Net/ThemeName -s "Adwaita"
-xfconf-query -c xfwm4 -p /general/theme -s "Adwaita"
-
-echo "[*] Resetting XFCE panel color and transparency..."
-# Default RGBA: light gray background, fully opaque
-xfconf-query -c xfce4-panel -p /panels/panel-1/background-rgba -s "0.8 0.8 0.8 1"
+xfconf-query -c xsettings -p /Net/ThemeName -s "Kali-Dark"
+xfconf-query -c xfwm4 -p /general/theme -s "Kali-Dark"
 
 echo "[*] Removing installed packages..."
 sudo apt remove --purge -y alacritty tmux fonts-roboto git xfce4-terminal
