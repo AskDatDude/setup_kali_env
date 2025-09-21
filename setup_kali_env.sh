@@ -57,45 +57,24 @@ set -g mouse on
 set -g history-limit 10000
 EOL
 
+echo "[*] Changing default shell to bash..."
+if [[ $SHELL != "/bin/bash" ]]; then
+    chsh -s /bin/bash
+    echo "[*] Shell changed to bash - will take effect on next login"
+else
+    echo "[*] Shell is already bash"
+fi
+
 echo "[*] Setting up bash prompt..."
 if ! grep -Fxq 'export PS1="\w\[\e[91;1m\] $ \[\e[0m\]"' ~/.bashrc; then
-    # Add robust bash prompt with fallback
-    cat >> ~/.bashrc << 'EOF'
-# Custom bash prompt - added by setup_kali_env.sh
-# Check if terminal supports colors
-if [[ $TERM == *"color"* ]] || [[ $TERM == "xterm"* ]] || [[ $TERM == "alacritty" ]] || [[ $TERM == "tmux"* ]]; then
-    export PS1="\w\[\e[91;1m\] $ \[\e[0m\]"
-else
-    export PS1="\w $ "
-fi
-EOF
-    echo "[*] Bash prompt added to ~/.bashrc - will take effect in new shells"
+    echo 'export PS1="\w\[\e[91;1m\] $ \[\e[0m\]"' >> ~/.bashrc
+    echo "[*] Bash prompt added to ~/.bashrc"
 else
     echo "[*] Bash prompt already configured"
 fi
 
-echo "[*] Debugging terminal environment..."
-echo "    Current TERM: $TERM"
-echo "    Current SHELL: $SHELL"
-echo "    Bash version: $BASH_VERSION"
-if command -v tput &> /dev/null; then
-    echo "    Terminal colors supported: $(tput colors 2>/dev/null || echo 'unknown')"
-else
-    echo "    tput command not available"
-fi
-
-echo "[*] Adding error handling to bashrc..."
-if ! grep -q "Error handling for missing commands" ~/.bashrc; then
-    cat >> ~/.bashrc << 'EOF'
-
-# Error handling for missing commands - added by setup_kali_env.sh
-# Prevent errors when sourcing bashrc
-set +e
-EOF
-    echo "[*] Error handling added to ~/.bashrc"
-else
-    echo "[*] Error handling already configured"
-fi
+echo "[*] Sourcing bashrc to apply changes..."
+bash -c "source ~/.bashrc" 2>/dev/null || true
 
 echo "[*] Setup complete! Open Alacritty to start tmux with Aura theme."
 echo "[*] To revert all changes, run the restore_kali_env.sh script."

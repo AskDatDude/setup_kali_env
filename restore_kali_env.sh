@@ -11,13 +11,12 @@ echo "[*] Removing tmux configuration..."
 rm -rf ~/.config/tmux
 
 echo "[*] Removing bash prompt customization..."
-# Remove the entire custom bash prompt block
-sed -i '/# Custom bash prompt - added by setup_kali_env.sh/,/^fi$/d' ~/.bashrc
-# Also remove old single-line version if it exists
 sed -i '/^export PS1="\\w\\\[\\e\[91;1m\\\] \$ \\\[\\e\[0m\\\]"$/d' ~/.bashrc
-# Remove error handling block
-sed -i '/# Error handling for missing commands - added by setup_kali_env.sh/,/^set +e$/d' ~/.bashrc
-echo "[*] Bash prompt and error handling removed - will take effect in new shells"
+echo "[*] Bash prompt removed - will take effect in new shells"
+
+echo "[*] Restoring default shell..."
+# Note: User may need to manually change shell back if desired
+echo "[*] Shell change requires manual restoration if needed (chsh -s /bin/zsh)"
 
 echo "[*] Resetting default terminal emulator..."
 sudo update-alternatives --auto x-terminal-emulator
