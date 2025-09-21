@@ -7,7 +7,7 @@
 set -e
 
 echo "[*] Updating system..."
-sudo apt update && sudo apt full-upgrade -y
+sudo apt update -y
 
 echo "[*] Installing packages..."
 sudo apt install -y alacritty tmux fonts-roboto git xfce4 xfce4-terminal arc-theme
