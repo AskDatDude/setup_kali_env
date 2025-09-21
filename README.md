@@ -21,13 +21,16 @@ This repository contains scripts to quickly transform your Kali Linux desktop in
 
 ### 🎨 Visual Configuration
 - **Terminal Setup**:
-  - Sets Alacritty as default terminal emulator (system-wide and XFCE)
+  - Sets Alacritty as default terminal emulator (system-wide and XFCE Default Applications)
+  - Properly configures XFCE utilities terminal dropdown selection
   - Configures Alacritty with Aura dark theme
   - Auto-launches tmux sessions in Alacritty
 - **Desktop Theme**:
   - Applies Arc-Dark theme to XFCE desktop and window manager
   - Replaces default Kali-Dark theme
+  - Sets custom space/planet wallpaper automatically
 - **Shell Customization**:
+  - **Changes default shell from ZSH to bash** (if currently using ZSH)
   - Adds custom red-accented bash prompt: `current_directory $ `
   - Maintains existing `.bashrc` content
 
@@ -35,6 +38,7 @@ This repository contains scripts to quickly transform your Kali Linux desktop in
 - `~/.config/alacritty/alacritty.toml` - Alacritty terminal configuration
 - `~/.config/alacritty/themes/` - Official Alacritty themes repository
 - `~/.config/tmux/tmux.conf` - Tmux configuration with mouse support
+- `~/Pictures/Wallpapers/custom_wallpaper.jpg` - Custom desktop wallpaper
 - Modified `~/.bashrc` - Adds custom PS1 prompt
 
 ## What the Restore Script Does
@@ -43,8 +47,10 @@ This repository contains scripts to quickly transform your Kali Linux desktop in
 - **Removes installed packages**: `alacritty`, `tmux`, `fonts-roboto`, `arc-theme`
 - **Deletes configuration directories**: `~/.config/alacritty`, `~/.config/tmux`
 - **Reverts theme**: Restores Kali-Dark theme for desktop and windows
-- **Resets terminal**: Restores `xfce4-terminal` as default
+- **Restores wallpaper**: Removes custom wallpaper and restores default Kali background
+- **Resets terminal**: Restores `xfce4-terminal` as default in XFCE utilities
 - **Cleans bash prompt**: Removes custom PS1 from `.bashrc`
+- **Shell restoration note**: Manual shell change back to ZSH if desired (`chsh -s /bin/zsh`)
 - **System cleanup**: Runs `apt autoremove` to clean unused dependencies
 
 ## How to Run
@@ -95,11 +101,15 @@ To completely revert all changes:
 - **Modern terminal**: GPU-accelerated Alacritty with dark theme
 - **Enhanced workflow**: Persistent tmux sessions with mouse support
 - **Consistent theming**: Arc-Dark theme across desktop environment
+- **Custom wallpaper**: Beautiful space/planet background automatically applied
 - **Improved prompt**: Directory-aware bash prompt with color coding
+- **Shell consistency**: Bash shell for reliable prompt rendering
 
 ### 🛠️ Troubleshooting
 - **Theme not applied**: Log out and back in to refresh XFCE settings
 - **Prompt not visible**: Open a new terminal session or run `source ~/.bashrc`
+- **Terminal not default**: Check Default Applications > Utilities > Terminal Emulator
+- **ZSH prompt issues**: Script automatically changes shell to bash for compatibility
 - **Permission errors**: Ensure you have sudo privileges
 - **Package conflicts**: Run `sudo apt update` before setup if issues occur
 
@@ -110,11 +120,12 @@ To completely revert all changes:
 
 ## 📄 File Structure
 
-```
+```text
 setup_kali_env/
-├── setup_kali_env.sh     # Main setup script
-├── restore_kali_env.sh   # Complete restoration script
-└── README.md            # This documentation
+├── setup_kali_env.sh                          # Main setup script
+├── restore_kali_env.sh                        # Complete restoration script
+├── boliviainteligente-37WxvlfW3to-unsplash.jpg # Custom wallpaper image
+└── README.md                                   # This documentation
 ```
 
 ---

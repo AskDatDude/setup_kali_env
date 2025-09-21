@@ -24,12 +24,28 @@ sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emula
 sudo update-alternatives --set x-terminal-emulator /usr/bin/alacritty
 
 echo "[*] Setting Alacritty as default in XFCE applications..."
-# Set Alacritty as default terminal in XFCE utilities
+# Set Alacritty as default terminal in XFCE utilities tab
+# This is the correct way to set it in Default Applications > Utilities
+xfconf-query -c xfce4-mime-settings -p /utilities/terminal-emulator -s "alacritty.desktop" --create --type string
+# Also try the alternative channel
 xfconf-query -c xfce4-settings-manager -p /utilities/terminal-emulator -s "alacritty" --create --type string
 
 echo "[*] Applying Arc-Dark theme..."
 xfconf-query -c xsettings -p /Net/ThemeName -s "Arc-Dark"
 xfconf-query -c xfwm4 -p /general/theme -s "Arc-Dark"
+
+echo "[*] Setting custom wallpaper..."
+# Copy the wallpaper to a permanent location
+mkdir -p ~/Pictures/Wallpapers
+cp "boliviainteligente-37WxvlfW3to-unsplash.jpg" ~/Pictures/Wallpapers/custom_wallpaper.jpg
+echo "[*] Wallpaper copied to ~/Pictures/Wallpapers/"
+
+# Set as desktop background for all monitors and workspaces
+xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVirtual1/workspace0/last-image -s "$HOME/Pictures/Wallpapers/custom_wallpaper.jpg" --create --type string
+xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/last-image -s "$HOME/Pictures/Wallpapers/custom_wallpaper.jpg" --create --type string 2>/dev/null || true
+xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVirtual1/workspace0/image-style -s 5 --create --type int
+xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/image-style -s 5 --create --type int 2>/dev/null || true
+echo "[*] Desktop background set to custom wallpaper"
 
 echo "[*] Cloning official Alacritty themes..."
 mkdir -p ~/.config/alacritty/themes
