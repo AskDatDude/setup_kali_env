@@ -18,26 +18,6 @@ if ! dpkg -l | grep -q "arc-theme"; then
     sudo apt install -y arc-theme
 fi
 
-echo "[*] Setting Alacritty as default terminal..."
-# Add Alacritty to alternatives and select automatically
-sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator /usr/bin/alacritty 50
-sudo update-alternatives --set x-terminal-emulator /usr/bin/alacritty
-
-echo "[*] Setting Alacritty as default in XFCE applications..."
-# Set Alacritty as default terminal in XFCE utilities tab
-xfconf-query -c xfce4-mime-settings -p /utilities/terminal-emulator -s "alacritty.desktop" --create --type string
-xfconf-query -c xfce4-settings-manager -p /utilities/terminal-emulator -s "alacritty" --create --type string
-
-echo "[*] Updating panel launcher..."
-# Find and replace qterminal launcher in XFCE panel
-xfconf-query -c xfce4-panel -l | grep "items" | while read prop; do
-    items=$(xfconf-query -c xfce4-panel -p "$prop" 2>/dev/null || echo "")
-    if echo "$items" | grep -q "qterminal"; then
-        echo "[*] Found qterminal in $prop, replacing with alacritty"
-        new_items=$(echo "$items" | sed 's|qterminal.desktop|alacritty.desktop|g')
-        xfconf-query -c xfce4-panel -p "$prop" -s "$new_items" --create --type array --type string 2>/dev/null || true
-    fi
-done
 
 echo "[*] Applying Arc-Dark theme..."
 xfconf-query -c xsettings -p /Net/ThemeName -s "Arc-Dark"
