@@ -59,10 +59,29 @@ EOL
 
 echo "[*] Setting up bash prompt..."
 if ! grep -Fxq 'export PS1="\w\[\e[91;1m\] $ \[\e[0m\]"' ~/.bashrc; then
-    echo 'export PS1="\w\[\e[91;1m\] $ \[\e[0m\]"' >> ~/.bashrc
+    # Add robust bash prompt with fallback
+    cat >> ~/.bashrc << 'EOF'
+# Custom bash prompt - added by setup_kali_env.sh
+# Check if terminal supports colors
+if [[ $TERM == *"color"* ]] || [[ $TERM == "xterm"* ]] || [[ $TERM == "alacritty" ]] || [[ $TERM == "tmux"* ]]; then
+    export PS1="\w\[\e[91;1m\] $ \[\e[0m\]"
+else
+    export PS1="\w $ "
+fi
+EOF
     echo "[*] Bash prompt added to ~/.bashrc - will take effect in new shells"
 else
     echo "[*] Bash prompt already configured"
+fi
+
+echo "[*] Debugging terminal environment..."
+echo "    Current TERM: $TERM"
+echo "    Current SHELL: $SHELL"
+echo "    Bash version: $BASH_VERSION"
+if command -v tput &> /dev/null; then
+    echo "    Terminal colors supported: $(tput colors 2>/dev/null || echo 'unknown')"
+else
+    echo "    tput command not available"
 fi
 
 echo "[*] Adding error handling to bashrc..."
