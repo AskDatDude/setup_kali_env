@@ -30,27 +30,31 @@ xfconf-query -c xfce4-mime-settings -p /utilities/terminal-emulator -s "alacritt
 # Also try the alternative channel
 xfconf-query -c xfce4-settings-manager -p /utilities/terminal-emulator -s "alacritty" --create --type string
 
-echo "[*] Updating desktop application shortcuts..."
-# Find and update any qterminal or other terminal shortcuts to use alacritty
-if [ -d "/usr/share/applications" ]; then
-    # Update system-wide desktop files that might reference terminal
-    sudo find /usr/share/applications -name "*.desktop" -exec grep -l "qterminal\|xfce4-terminal" {} \; 2>/dev/null | while read file; do
-        sudo sed -i 's/qterminal/alacritty/g; s/xfce4-terminal/alacritty/g' "$file" 2>/dev/null || true
-        echo "[*] Updated terminal reference in $file"
-    done
-fi
+echo "[*] Creating new terminal shortcuts..."
+# Remove old terminal shortcuts
+xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Primary><Alt>t" --reset 2>/dev/null || true
+xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary><Alt>t" --reset 2>/dev/null || true
 
-# Update user-specific desktop files
-if [ -d "~/.local/share/applications" ]; then
-    find ~/.local/share/applications -name "*.desktop" -exec grep -l "qterminal\|xfce4-terminal" {} \; 2>/dev/null | while read file; do
-        sed -i 's/qterminal/alacritty/g; s/xfce4-terminal/alacritty/g' "$file" 2>/dev/null || true
-        echo "[*] Updated terminal reference in $file"
-    done
-fi
+# Create new Alacritty shortcut
+xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Primary><Alt>t" -s "alacritty" --create --type string
+echo "[*] Set Ctrl+Alt+T to open Alacritty"
 
-# Update XFCE keyboard shortcuts
-xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Primary><Alt>t" -s "alacritty" --create --type string 2>/dev/null || true
-xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary><Alt>t" -s "alacritty" --create --type string 2>/dev/null || true
+# Also create a custom desktop entry to ensure it's available
+mkdir -p ~/.local/share/applications
+cat > ~/.local/share/applications/terminal-emulator.desktop <<EOL
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Terminal Emulator
+Comment=Use the terminal
+TryExec=alacritty
+Exec=alacritty
+Icon=terminal
+StartupNotify=true
+NoDisplay=false
+Categories=System;TerminalEmulator;
+EOL
+echo "[*] Created custom terminal emulator desktop entry"
 
 echo "[*] Applying Arc-Dark theme..."
 xfconf-query -c xsettings -p /Net/ThemeName -s "Arc-Dark"
