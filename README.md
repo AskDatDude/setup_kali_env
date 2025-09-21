@@ -4,7 +4,7 @@ This repository contains scripts to quickly transform your Kali Linux desktop in
 
 ## ⚠️ Important Notice
 
-**These scripts perform a full system update (`apt update && apt full-upgrade`)** which can take significant time and may modify core system packages. Use with caution on production systems.
+**These scripts perform a full system update (`apt update && apt full-upgrade`)** which can take significant time and may modify core system packages. Use with caution on production systems. Also this code might include bugs so run these at your own risk.
 
 ## What the Setup Script Does
 
@@ -21,15 +21,14 @@ This repository contains scripts to quickly transform your Kali Linux desktop in
 
 ### 🎨 Visual Configuration
 - **Terminal Setup**:
-  - Sets Alacritty as default terminal emulator (system-wide and XFCE Default Applications)
   - Configures Alacritty with Aura dark theme
   - Auto-launches tmux sessions in Alacritty
 - **Desktop Theme**:
   - Applies Arc-Dark theme to XFCE desktop and window manager
   - Replaces default Kali-Dark theme
-  - Sets custom space/planet wallpaper automatically
+  - Sets custom wallpaper automatically
 - **Shell Customization**:
-  - **Changes default shell from ZSH to bash** (if currently using ZSH)
+  - **Changes default shell from ZSH to bash** (if currently using ZSH - requires restart to update)
   - Adds custom red-accented bash prompt: `current_directory $ `
   - Maintains existing `.bashrc` content
 
@@ -73,11 +72,14 @@ This repository contains scripts to quickly transform your Kali Linux desktop in
    - Set **Terminal Emulator** dropdown to **Alacritty**
    - For panel launcher: Right-click terminal icon → **Properties** → Change command to `alacritty`
 
+4. **Restart** the machine:
+    - This ensures that .bashrc changes take effect.
+
 ### 🔄 Restore Original Environment
 
 To completely revert all changes:
 ```bash
-./restore_kali_env.sh
+bash ~/setup_kali_env/restore_kali_env.sh
 ```
 
 ## 📋 Requirements
@@ -88,6 +90,10 @@ To completely revert all changes:
 - **Approximately 100-200MB** disk space for packages and themes
 
 ## 📝 Important Notes
+
+### SET A SNAPSHOT
+- **Revert back** to safe point.
+- **The scripts** may brake some systems.
 
 ### ⏰ Performance Considerations
 - **First run takes 10-30 minutes** due to full system upgrade
