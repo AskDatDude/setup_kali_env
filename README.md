@@ -22,7 +22,6 @@ This repository contains scripts to quickly transform your Kali Linux desktop in
 ### 🎨 Visual Configuration
 - **Terminal Setup**:
   - Sets Alacritty as default terminal emulator (system-wide and XFCE Default Applications)
-  - Properly configures XFCE utilities terminal dropdown selection
   - Configures Alacritty with Aura dark theme
   - Auto-launches tmux sessions in Alacritty
 - **Desktop Theme**:
@@ -68,7 +67,11 @@ This repository contains scripts to quickly transform your Kali Linux desktop in
    bash setup_kali_env.sh
    ```
 
-4. **Open Alacritty** to see the new environment in action
+3. **Manual Terminal Configuration** (if needed):
+   - Open **Settings** → **Default Applications**
+   - Go to **Utilities** tab
+   - Set **Terminal Emulator** dropdown to **Alacritty**
+   - For panel launcher: Right-click terminal icon → **Properties** → Change command to `alacritty`
 
 ### 🔄 Restore Original Environment
 
@@ -108,7 +111,8 @@ To completely revert all changes:
 ### 🛠️ Troubleshooting
 - **Theme not applied**: Log out and back in to refresh XFCE settings
 - **Prompt not visible**: Open a new terminal session or run `source ~/.bashrc`
-- **Terminal not default**: Check Default Applications > Utilities > Terminal Emulator
+- **Terminal not default**: Manually set in Default Applications > Utilities > Terminal Emulator
+- **Panel launcher still opens old terminal**: Right-click terminal icon in panel → Properties → Change command to `alacritty`
 - **ZSH prompt issues**: Script automatically changes shell to bash for compatibility
 - **Permission errors**: Ensure you have sudo privileges
 - **Package conflicts**: Run `sudo apt update` before setup if issues occur
