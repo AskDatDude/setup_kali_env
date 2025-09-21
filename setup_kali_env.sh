@@ -12,17 +12,24 @@ sudo apt update && sudo apt full-upgrade -y
 echo "[*] Installing packages..."
 sudo apt install -y alacritty tmux fonts-roboto git xfce4 xfce4-terminal arc-theme
 
+echo "[*] Verifying Arc theme installation..."
+if ! dpkg -l | grep -q "arc-theme"; then
+    echo "[!] Arc theme installation failed. Retrying..."
+    sudo apt install -y arc-theme
+fi
+
 echo "[*] Setting Alacritty as default terminal..."
 # Add Alacritty to alternatives and select automatically
 sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator /usr/bin/alacritty 50
 sudo update-alternatives --set x-terminal-emulator /usr/bin/alacritty
 
+echo "[*] Setting Alacritty as default in XFCE applications..."
+# Set Alacritty as default terminal in XFCE utilities
+xfconf-query -c xfce4-settings-editor -p /utilities-terminal -s "alacritty" --create --type string
+
 echo "[*] Applying Arc-Dark theme..."
 xfconf-query -c xsettings -p /Net/ThemeName -s "Arc-Dark"
 xfconf-query -c xfwm4 -p /general/theme -s "Arc-Dark"
-
-echo "[*] Setting XFCE panel color and transparency..."
-xfconf-query -c xfce4-panel -p /panels/panel-1/background-rgba -s "0.02 0.02 0.02 0.6"
 
 echo "[*] Cloning official Alacritty themes..."
 mkdir -p ~/.config/alacritty/themes
@@ -53,8 +60,10 @@ EOL
 echo "[*] Setting up bash prompt..."
 if ! grep -Fxq 'export PS1="\w\[\e[91;1m\] $ \[\e[0m\]"' ~/.bashrc; then
     echo 'export PS1="\w\[\e[91;1m\] $ \[\e[0m\]"' >> ~/.bashrc
+    echo "[*] Bash prompt added to ~/.bashrc - will take effect in new shells"
+else
+    echo "[*] Bash prompt already configured"
 fi
-source ~/.bashrc || true
 
 echo "[*] Setup complete! Open Alacritty to start tmux with Aura theme."
 echo "[*] To revert all changes, run the restore_kali_env.sh script."
