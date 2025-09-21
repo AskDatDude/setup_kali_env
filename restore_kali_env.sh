@@ -26,12 +26,21 @@ echo "[*] Resetting XFCE default terminal..."
 xfconf-query -c xfce4-mime-settings -p /utilities/terminal-emulator -s "xfce4-terminal.desktop" --create --type string 2>/dev/null || true
 xfconf-query -c xfce4-settings-manager -p /utilities/terminal-emulator -s "xfce4-terminal" --create --type string 2>/dev/null || true
 
-echo "[*] Restoring terminal shortcuts..."
-# Remove Alacritty shortcut
-xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Primary><Alt>t" --reset 2>/dev/null || true
+echo "[*] Resetting XFCE default terminal..."
+# Reset XFCE utilities terminal to default (xfce4-terminal)
+xfconf-query -c xfce4-mime-settings -p /utilities/terminal-emulator -s "xfce4-terminal.desktop" --create --type string 2>/dev/null || true
+xfconf-query -c xfce4-settings-manager -p /utilities/terminal-emulator -s "xfce4-terminal" --create --type string 2>/dev/null || true
 
-# Restore default terminal shortcut
-xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Primary><Alt>t" -s "xfce4-terminal" --create --type string 2>/dev/null || true
+echo "[*] Restoring panel launcher..."
+# Find and restore alacritty launcher back to qterminal in XFCE panel
+xfconf-query -c xfce4-panel -l | grep "items" | while read prop; do
+    items=$(xfconf-query -c xfce4-panel -p "$prop" 2>/dev/null || echo "")
+    if echo "$items" | grep -q "alacritty"; then
+        echo "[*] Found alacritty in $prop, restoring to qterminal"
+        new_items=$(echo "$items" | sed 's|alacritty.desktop|qterminal.desktop|g')
+        xfconf-query -c xfce4-panel -p "$prop" -s "$new_items" --create --type array --type string 2>/dev/null || true
+    fi
+done
 
 # Remove custom desktop entry
 rm -f ~/.local/share/applications/terminal-emulator.desktop 2>/dev/null || true

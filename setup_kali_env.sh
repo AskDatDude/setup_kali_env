@@ -25,36 +25,19 @@ sudo update-alternatives --set x-terminal-emulator /usr/bin/alacritty
 
 echo "[*] Setting Alacritty as default in XFCE applications..."
 # Set Alacritty as default terminal in XFCE utilities tab
-# This is the correct way to set it in Default Applications > Utilities
 xfconf-query -c xfce4-mime-settings -p /utilities/terminal-emulator -s "alacritty.desktop" --create --type string
-# Also try the alternative channel
 xfconf-query -c xfce4-settings-manager -p /utilities/terminal-emulator -s "alacritty" --create --type string
 
-echo "[*] Creating new terminal shortcuts..."
-# Remove old terminal shortcuts
-xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Primary><Alt>t" --reset 2>/dev/null || true
-xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Primary><Alt>t" --reset 2>/dev/null || true
-
-# Create new Alacritty shortcut
-xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Primary><Alt>t" -s "alacritty" --create --type string
-echo "[*] Set Ctrl+Alt+T to open Alacritty"
-
-# Also create a custom desktop entry to ensure it's available
-mkdir -p ~/.local/share/applications
-cat > ~/.local/share/applications/terminal-emulator.desktop <<EOL
-[Desktop Entry]
-Version=1.0
-Type=Application
-Name=Terminal Emulator
-Comment=Use the terminal
-TryExec=alacritty
-Exec=alacritty
-Icon=terminal
-StartupNotify=true
-NoDisplay=false
-Categories=System;TerminalEmulator;
-EOL
-echo "[*] Created custom terminal emulator desktop entry"
+echo "[*] Updating panel launcher..."
+# Find and replace qterminal launcher in XFCE panel
+xfconf-query -c xfce4-panel -l | grep "items" | while read prop; do
+    items=$(xfconf-query -c xfce4-panel -p "$prop" 2>/dev/null || echo "")
+    if echo "$items" | grep -q "qterminal"; then
+        echo "[*] Found qterminal in $prop, replacing with alacritty"
+        new_items=$(echo "$items" | sed 's|qterminal.desktop|alacritty.desktop|g')
+        xfconf-query -c xfce4-panel -p "$prop" -s "$new_items" --create --type array --type string 2>/dev/null || true
+    fi
+done
 
 echo "[*] Applying Arc-Dark theme..."
 xfconf-query -c xsettings -p /Net/ThemeName -s "Arc-Dark"
@@ -118,5 +101,5 @@ fi
 echo "[*] Sourcing bashrc to apply changes..."
 bash -c "source ~/.bashrc" 2>/dev/null || true
 
-echo "[*] Setup complete! Open Alacritty to start tmux with Aura theme."
+echo "[*] Setup complete! Log out and back in or restart to see all changes."
 echo "[*] To revert all changes, run the restore_kali_env.sh script."
