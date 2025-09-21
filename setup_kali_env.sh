@@ -25,7 +25,7 @@ sudo update-alternatives --set x-terminal-emulator /usr/bin/alacritty
 
 echo "[*] Setting Alacritty as default in XFCE applications..."
 # Set Alacritty as default terminal in XFCE utilities
-xfconf-query -c xfce4-settings-editor -p /utilities-terminal -s "alacritty" --create --type string
+xfconf-query -c xfce4-settings-manager -p /utilities/terminal-emulator -s "alacritty" --create --type string
 
 echo "[*] Applying Arc-Dark theme..."
 xfconf-query -c xsettings -p /Net/ThemeName -s "Arc-Dark"
@@ -63,6 +63,19 @@ if ! grep -Fxq 'export PS1="\w\[\e[91;1m\] $ \[\e[0m\]"' ~/.bashrc; then
     echo "[*] Bash prompt added to ~/.bashrc - will take effect in new shells"
 else
     echo "[*] Bash prompt already configured"
+fi
+
+echo "[*] Adding error handling to bashrc..."
+if ! grep -q "Error handling for missing commands" ~/.bashrc; then
+    cat >> ~/.bashrc << 'EOF'
+
+# Error handling for missing commands - added by setup_kali_env.sh
+# Prevent errors when sourcing bashrc
+set +e
+EOF
+    echo "[*] Error handling added to ~/.bashrc"
+else
+    echo "[*] Error handling already configured"
 fi
 
 echo "[*] Setup complete! Open Alacritty to start tmux with Aura theme."
